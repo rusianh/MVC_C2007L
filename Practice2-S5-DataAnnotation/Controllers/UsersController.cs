@@ -34,6 +34,23 @@ namespace Practice2_S5_DataAnnotation.Controllers
             //var user = list.Find(x => x.Name == name).;
             return View(user);
         }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         //void SearchDuLieu()
         //{
         //    List<User> list = originalList;
