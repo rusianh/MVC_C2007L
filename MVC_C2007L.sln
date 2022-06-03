@@ -11,7 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Practice2-S5-DataAnnotation
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Practice3-S6-DataAccess", "Practice3\Practice3-S6-DataAccess.csproj", "{DEC5B64F-C623-4AC9-BDDD-414F1FCDA7CD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Practice4-S7", "S7\Practice4-S7.csproj", "{676FBCE6-0F74-48A3-BE32-5CFB3172DD24}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Practice4-5-Searching", "S7\Practice4-5-Searching.csproj", "{676FBCE6-0F74-48A3-BE32-5CFB3172DD24}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

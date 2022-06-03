@@ -9,6 +9,7 @@ using System.Web;
 using System.Web.Mvc;
 using S7.DataConnect;
 using S7.Models;
+using PagedList;
 
 namespace S7.Controllers
 {
@@ -17,10 +18,83 @@ namespace S7.Controllers
         private MyDbContext db = new MyDbContext();
 
         // GET: Exams
-        public async Task<ActionResult> Index()
+        public ViewResult Index(string sortOrder, string searchString, string currentFilter, int? page, [Bind(Include = "StudentId,SubjectId")] Exam exam,string slr)
         {
+            ViewBag.CurrentSort = sortOrder;
+            ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewBag.SubjectNameSortParm = sortOrder == "SubjectName" ? "subjectname_desc" : "SubjectName";
+            ViewBag.ScoreSort = sortOrder == "Score" ? "score_desc" : "Score";
+            
+            SelectList ddlStu = new SelectList(db.Students, "StudentId", "Name", exam.StudentId);
+            SelectList ddlSub = new SelectList(db.Subjects, "SubjectId", "SubjectName", exam.SubjectId);
+
+            ViewBag.SubjectId = ddlSub;
+            ViewBag.StudentId= ddlStu;
             var exams = db.Exams.Include(e => e.Student).Include(e => e.Subject);
-            return View(await exams.ToListAsync());
+
+            if (searchString != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+            ViewBag.CurrentFilter = searchString;
+
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                exams = exams.Where(s => s.Student.Name.ToLower().Replace(" ", String.Empty).Contains(searchString.ToLower().Replace(" ", String.Empty)) || s.Subject.SubjectName.ToLower().Replace(" ", String.Empty).Contains(searchString.ToLower().Replace(" ", String.Empty)));
+            }
+            else if ((!String.IsNullOrEmpty(searchString)) || (!ddlStu.Items.Equals("All") || !ddlSub.Items.Equals("All")))
+            {
+                exams = exams.Where(s => s.SubjectId == exam.SubjectId || s.StudentId == exam.StudentId);
+            }
+            //else if (String.IsNullOrEmpty(searchString) && !ddlStu.Items.Equals("All") && ddlSub.Items.Equals("All"))
+            //{
+            //    exams = exams.Where(s =>  s.StudentId == exam.StudentId);
+            //}
+            //else if (String.IsNullOrEmpty(searchString) && !ddlSub.Items.Equals("All") && ddlStu.Items.Equals("All"))
+            //{
+            //    exams = exams.Where(s => s.SubjectId == exam.SubjectId);
+            //}
+            //else if (String.IsNullOrEmpty(searchString) && (!ddlStu.Items.Equals("All") && !ddlSub.Items.Equals("All")))
+            //{
+            //    exams = exams.Where(s => s.StudentId == exam.StudentId && s.SubjectId == exam.SubjectId);
+            //}
+            else if ((String.IsNullOrEmpty(searchString)) && (ddlStu.Items.Equals("All") && ddlSub.Items.Equals("All")))
+            {
+                return View(exams.ToList());
+            }
+
+
+
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    exams = exams.OrderByDescending(s => s.Student.Name);
+                    break;
+                case "SubjectName":
+                    exams = exams.OrderBy(s => s.Student.Name);
+                    break;
+                case "subjectname_desc":
+                    exams = exams.OrderByDescending(s => s.Subject.SubjectName);
+                    break;
+                case "Score":
+                    exams = exams.OrderBy(s => s.Score);
+                    break;
+                case "score_desc":
+                    exams = exams.OrderByDescending(s => s.Score);
+                    break;
+                default:
+                    exams = exams.OrderBy(s => s.Student.Name);
+                    break;
+            }
+            int pageSize = 5;
+            int pageNumber = (page ?? 1);
+            return View(exams.ToPagedList(pageNumber, pageSize));
+
         }
 
         // GET: Exams/Details/5

@@ -9,6 +9,7 @@ using System.Web;
 using System.Web.Mvc;
 using S7.DataConnect;
 using S7.Models;
+using PagedList;
 
 namespace S7.Controllers
 {
@@ -17,9 +18,65 @@ namespace S7.Controllers
         private MyDbContext db = new MyDbContext();
 
         // GET: Subjects
-        public async Task<ActionResult> Index()
+        public ViewResult Index(string sortOrder, string searchString, string currentFilter, int? page, DateTime? start, DateTime? end)
         {
-            return View(await db.Subjects.ToListAsync());
+            ViewBag.CurrentSort = sortOrder;
+            ViewBag.SubjectNameSortParm = String.IsNullOrEmpty(sortOrder) ? "subjectname_desc" : "";
+            ViewBag.SubjectCodeSortParm = sortOrder == "SubjectCode" ? "subjectcode_desc" : "SubjectCode";
+            ViewBag.StartDateSort = sortOrder == "StartDate" ? "startD_desc" : "StartDate";
+            ViewBag.EndDateSort = sortOrder == "EndDate" ? "endD_desc" : "EndDate";
+            ViewBag.Description = "Description";
+            var students = from s in db.Subjects
+                           select s;
+
+            if (searchString != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewBag.CurrentFilter = searchString;
+            ViewBag.start = start;
+            ViewBag.end = end;
+            if (!String.IsNullOrEmpty(searchString) || (start.HasValue && end.HasValue))
+            {
+                students = students.Where(s => s.SubjectName.ToLower().Replace(" ", String.Empty).Contains(searchString.ToLower().Replace(" ", String.Empty)) || s.SubjectCode.ToLower().Replace(" ", String.Empty).Contains(searchString.ToLower().Replace(" ",String.Empty))|| (s.StartDate >=start && s.EndDate <=end)) ;
+            }
+            
+            switch (sortOrder)
+            {
+                case "subjectname_desc":
+                    students = students.OrderByDescending(s => s.SubjectName);
+                    break;
+                case "SubjectCode":
+                    students = students.OrderBy(s => s.SubjectCode);
+                    break;
+                case "subjectcode_desc":
+                    students = students.OrderByDescending(s => s.SubjectCode);
+                    break;
+                case "StartDate":
+                    students = students.OrderBy(s => s.StartDate);
+                    break;
+                case "startD_desc":
+                    students = students.OrderByDescending(s => s.StartDate);
+                    break;
+                case "EndDate":
+                    students = students.OrderBy(s => s.EndDate);
+                    break;
+                case "endD_desc":
+                    students = students.OrderByDescending(s=>s.EndDate);
+                    break;
+                default:
+                    students = students.OrderBy(s => s.SubjectName);
+                    break;
+            }
+            int pageSize = 5;
+            int pageNumber = (page ?? 1);
+            return View(students.ToPagedList(pageNumber, pageSize));
+            
         }
 
         // GET: Subjects/Details/5

@@ -1,4 +1,5 @@
-﻿@model IEnumerable<S7.Models.Subject>
+﻿@model PagedList.IPagedList<S7.Models.Subject>
+@using PagedList.Mvc
 
 @{
     ViewBag.Title = "Index";
@@ -9,49 +10,67 @@
 <p>
     @Html.ActionLink("Create New", "Create")
 </p>
+@using (Html.BeginForm("Index", "Subjects", FormMethod.Get))
+{
+    <p>
+        Search: @Html.TextBox("SearchString", ViewBag.CurrentFilter as string, htmlAttributes: new { @class = "form-control" })
+        Start Date: @Html.TextBox("start",null, htmlAttributes: new { @class = "form-control datepicker", type = "date" })
+        End Date: @Html.TextBox("end", null, htmlAttributes: new { @class = "form-control datepicker", type = "date" })
+        <input type="submit" value="Search" class="btn btn-default" />
+    </p>
+}
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.SubjectName)
+            @Html.ActionLink("SubjectName", "Index", new { sortOrder = ViewBag.SubjectNameSortParm })
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.SubjectCode)
+            @Html.ActionLink("SubjectCode", "Index", new { sortOrder = ViewBag.SubjectCodeSortParm })
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Description)
+            @ViewBag.Description
+
+        </th>
+
+        <th>
+            @Html.ActionLink("StartDate", "Index", new { sortOrder = ViewBag.StartDateSort })
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.StartDate)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.EndDate)
+            @Html.ActionLink("EndDate", "Index", new { sortOrder = ViewBag.EndDateSort })
         </th>
         <th></th>
     </tr>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.SubjectName)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.SubjectCode)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Description)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.StartDate)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.EndDate)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.SubjectId }) |
-            @Html.ActionLink("Details", "Details", new { id=item.SubjectId }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.SubjectId })
-        </td>
-    </tr>
-}
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.SubjectName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SubjectCode)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.StartDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EndDate)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.SubjectId }) |
+                @Html.ActionLink("Details", "Details", new { id = item.SubjectId }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.SubjectId })
+            </td>
+        </tr>
+    }
 
 </table>
+<br />
+Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+
+@Html.PagedListPager(Model, page => Url.Action("Index",
+    new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }))
+

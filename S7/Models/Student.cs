@@ -13,6 +13,9 @@ namespace S7.Models
         [Required]
         [StringLength(150, MinimumLength = 8)]
         public string Name { get; set; }
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}")]
+        public DateTime DoB { get; set; }
         [EmailAddress]
         public string Email { get; set; }
         [Required]

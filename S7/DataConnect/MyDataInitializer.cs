@@ -7,11 +7,11 @@ using System.Web;
 
 namespace S7.DataConnect
 {
-    public class MyDataInitializer : DropCreateDatabaseAlways<MyDbContext>
+    public class MyDataInitializer : DropCreateDatabaseIfModelChanges<MyDbContext>
     {
         protected override void Seed(MyDbContext context)
         {
-           
+
             base.Seed(context);
             context.Students.AddRange(new List<Student>()
             {
@@ -19,20 +19,102 @@ namespace S7.DataConnect
                 {
                      Name="Huy123456",
                      Email="huy@gmail.com",
-                    Address ="Ha Noi",
+                     Address ="Ha Noi",
+                     DoB = new DateTime(1995,1,1),
                 },
                  new Student
                 {
                      Name="Cuong12345",
                      Email="huy@gmail.com",
-                    Address ="Ha Noi",
+                     Address ="Ha Noi",
+                     DoB=new DateTime(1996,1,1),
                 },
                   new Student
                 {
                      Name="Vietanh1234",
                      Email="huy@gmail.com",
                      Address ="Ha Noi",
-                     
+                     DoB=new DateTime(1994,1,1),
+                },
+                    new Student
+                {
+                     Name="Vietanh1234",
+                     Email="huy@gmail.com",
+                     Address ="Ha Noi",
+                     DoB=new DateTime(1994,1,1),
+
+                },
+                      new Student
+                {
+                     Name="Vietanh1234",
+                     Email="huy@gmail.com",
+                     Address ="Ha Noi",
+                     DoB=new DateTime(1994,1,1),
+
+                },
+                        new Student
+                {
+                     Name="Vietanh1234",
+                     Email="huy@gmail.com",
+                     Address ="Ha Noi",
+                     DoB=new DateTime(1994,1,1),
+
+                },
+                          new Student
+                {
+                     Name="Vietanh1234",
+                     Email="huy@gmail.com",
+                     Address ="Ha Noi",
+                     DoB=new DateTime(1994,1,1),
+
+                },
+                            new Student
+                {
+                     Name="Vietanh1234",
+                     Email="huy@gmail.com",
+                     Address ="Ha Noi",
+                     DoB=new DateTime(1994,1,1),
+
+                },
+                              new Student
+                {
+                     Name="Vietanh1234",
+                     Email="huy@gmail.com",
+                     Address ="Ha Noi",
+                     DoB=new DateTime(1994,1,1),
+
+                },
+                                new Student
+                {
+                     Name="Vietanh1234",
+                     Email="huy@gmail.com",
+                     Address ="Ha Noi",
+                     DoB=new DateTime(1994,1,1),
+
+                },
+                                  new Student
+                {
+                     Name="Vietanh1234",
+                     Email="huy@gmail.com",
+                     Address ="Ha Noi",
+                     DoB=new DateTime(1994,1,1),
+
+                },
+                                    new Student
+                {
+                     Name="Vietanh1234",
+                     Email="huy@gmail.com",
+                     Address ="Ha Noi",
+                     DoB=new DateTime(1994,1,1),
+
+                },
+                                      new Student
+                {
+                     Name="Vietanh1234",
+                     Email="huy@gmail.com",
+                     Address ="Ha Noi",
+                     DoB=new DateTime(1994,1,1),
+
                 },
             });
 
@@ -63,7 +145,7 @@ namespace S7.DataConnect
                     SubjectCode = "MVC123",
                 },
             });
-            
+
             context.SaveChanges();
         }
     }

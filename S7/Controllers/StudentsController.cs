@@ -9,7 +9,7 @@ using System.Web;
 using System.Web.Mvc;
 using S7.DataConnect;
 using S7.Models;
-
+using PagedList;
 namespace S7.Controllers
 {
     public class StudentsController : Controller
@@ -17,11 +17,67 @@ namespace S7.Controllers
         private MyDbContext db = new MyDbContext();
 
         // GET: Students
-        public async Task<ActionResult> Index()
-        {
-            return View(await db.Students.ToListAsync());
-        }
+        //public async Task<ActionResult> Index()
+        //{
+        //    return View(await db.Students.ToListAsync());
+        //}
 
+        public ViewResult Index(string sortOrder, string searchString, string currentFilter, int? page, DateTime? searchDate)
+        {
+            ViewBag.CurrentSort = sortOrder;
+            ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewBag.EmailSortParm = sortOrder == "Email" ? "email_desc" : "Email";
+            ViewBag.AddressSort = sortOrder == "Address" ? "address_desc" : "Address";
+            ViewBag.DateSort = sortOrder == "DoB" ? "dob_desc" : "DoB";
+            var students = from s in db.Students
+                           select s;
+
+            if (searchString != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewBag.CurrentFilter = searchString;
+            if (!String.IsNullOrEmpty(searchString) || searchDate.HasValue )
+            {
+                students = students.Where(s => s.Name.ToLower().Replace(" ", String.Empty).Contains(searchString.ToLower().Replace(" ", String.Empty)) || s.Email.ToLower().Replace(" ", String.Empty).Contains(searchString.ToLower().Replace(" ", String.Empty)) || s.DoB == searchDate);
+            }
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    students = students.OrderByDescending(s => s.Name);
+                    break;
+                case "Email":
+                    students = students.OrderBy(s => s.Email);
+                    break;
+                case "email_desc":
+                    students = students.OrderByDescending(s => s.Email);
+                    break;
+                case "Address":
+                    students = students.OrderBy(s => s.Address);
+                    break;
+                case "address_desc":
+                    students = students.OrderByDescending(s => s.Address);
+                    break;
+                case "DoB":
+                    students = students.OrderBy(s => s.DoB);
+                    break;
+                case "dob_desc":
+                    students = students.OrderByDescending(s => s.DoB);
+                    break;
+                default:
+                    students = students.OrderBy(s => s.Name);
+                    break;
+            }
+            int pageSize = 5;
+            int pageNumber = (page ?? 1);
+            return View(students.ToPagedList(pageNumber, pageSize));
+
+        }
         // GET: Students/Details/5
         public async Task<ActionResult> Details(long? id)
         {
@@ -48,7 +104,7 @@ namespace S7.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include = "StudentId,Name,Email,Address")] Student student)
+        public async Task<ActionResult> Create([Bind(Include = "StudentId,Name,DoB,Email,Address")] Student student)
         {
             if (ModelState.IsValid)
             {
@@ -80,7 +136,7 @@ namespace S7.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include = "StudentId,Name,Email,Address")] Student student)
+        public async Task<ActionResult> Edit([Bind(Include = "StudentId,Name,DoB,Email,Address")] Student student)
         {
             if (ModelState.IsValid)
             {
