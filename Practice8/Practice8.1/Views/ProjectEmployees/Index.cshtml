@@ -1,0 +1,53 @@
+﻿@model IEnumerable<Practice8._1.Models.ProjectEmployee>
+
+@{
+    ViewBag.Title = "Index";
+}
+@using (Html.BeginForm())
+{
+    <label>ProjectName:</label>
+    @Html.TextBox("searchName","", new { @class = "form-control" })
+    <label>EmployeeName:</label>
+    @Html.DropDownList("EmployeeID", "All")
+    <button type="submit">Search</button>
+}
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Employee.EmployeeName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Project.ProjectName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Task)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Employee.EmployeeName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Project.ProjectName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Task)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.ProjectEmployeeId }) |
+                @Html.ActionLink("Details", "Details", new { id = item.ProjectEmployeeId }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.ProjectEmployeeId })
+            </td>
+        </tr>
+    }
+
+</table>
