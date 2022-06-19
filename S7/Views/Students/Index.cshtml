@@ -9,8 +9,7 @@
 <p>
     @Html.ActionLink("Create New", "Create")
 </p>
-@using (Html.BeginForm("Index", "Students", FormMethod.Get))
-{
+@using (Html.BeginForm("Index", "Students", FormMethod.Get)) {
     <p>
         Find by Name: @Html.TextBox("SearchString", ViewBag.CurrentFilter as string, htmlAttributes: new { @class = "form-control" })
         Find by Date: @Html.TextBox("SearchDate", null, htmlAttributes: new { @class = "form-control datepicker", type = "date" })
@@ -34,8 +33,7 @@
         <th></th>
     </tr>
 
-    @foreach (var item in Model)
-    {
+    @foreach (var item in Model) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Name)
@@ -53,6 +51,18 @@
                 @Html.ActionLink("Edit", "Edit", new { id = item.StudentId }) |
                 @Html.ActionLink("Details", "Details", new { id = item.StudentId }) |
                 @Html.ActionLink("Delete", "Delete", new { id = item.StudentId })
+            </td>
+            <td>
+                @Ajax.ActionLink("View  All Student Info", "AllStudent", "Home", new AjaxOptions
+   {
+       UpdateTargetId = "divAllStudent",
+       OnBegin = "fnOnBegin",
+       InsertionMode = InsertionMode.Replace,
+       HttpMethod = "GET",
+       LoadingElementId = "imgloader",
+       OnSuccess = "fnSuccess",
+       Confirm = "Do you want to get all student info ?????"
+   }, new { @class = "btn btn-default" })
             </td>
         </tr>
     }
