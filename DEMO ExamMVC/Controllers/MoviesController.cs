@@ -19,10 +19,39 @@ namespace DEMO_ExamMVC.Controllers
 
         // GET: Movies
         [AllowAnonymous]
-        public ActionResult Index(int page =1, int pageSize =2)
+        public ActionResult Index(string sortOrder, int page =1, int pageSize =3)
         {
+            //ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "name_asc";
+            ViewBag.NameSortParm = sortOrder == "name_asc" ? "name_desc" : "name_asc";
+
+            ViewBag.TitleSortParm = sortOrder == "Title" ? "title_desc" : "Title";
+
+            //ViewBag.DateSortParm = sortOrder == "Date" ? "date_desc" : "Date";
+            //List Movies
             var movies = db.Movies.Include(m => m.Genre);
-            return View(movies.ToList().ToPagedList(page,pageSize));
+            //Switch sortOrder
+            switch (sortOrder) {
+                case "title_desc":
+                    movies = movies.OrderByDescending(s => s.Title);
+                    break;
+                case "Title":
+                    movies = movies.OrderBy(s => s.Title);
+                    break;
+                case "name_desc":
+                    movies = movies.OrderByDescending(s => s.Genre.GenreName);
+                    break;
+                //case "name_asc":
+                //    movies = movies.OrderBy(s => s.Genre.GenreName);
+                //    break;
+                //case "date_desc":
+                //    movies = movies.OrderByDescending(s => s.EnrollmentDate);
+                //    break;
+                default:
+                    movies = movies.OrderBy(s => s.Genre.GenreName);
+                    break;
+            }
+            //switch order end
+                    return View(movies.ToList().ToPagedList(page,pageSize));
         }
 
         // GET: Movies/Details/5

@@ -15,12 +15,31 @@
     @Html.ActionLink("Create New", "Create")
 </p>
 <table class="table">
+    @*<tr>
+            <th>
+                GenreName
+            </th>
+            <th>
+                Title
+            </th>
+            <th>
+                ReleaseDate
+            </th>
+            <th>
+                RunningTime
+            </th>
+            <th>
+                BoxOffice
+            </th>
+            <th></th>
+        </tr>*@
     <tr>
         <th>
-            GenreName
+            @Html.ActionLink("GenreName", "Index", new { sortOrder = ViewBag.NameSortParm })
         </th>
         <th>
-            Title
+            @Html.ActionLink("Title", "Index", new { sortOrder = ViewBag.TitleSortParm })
+
         </th>
         <th>
             ReleaseDate
@@ -60,5 +79,5 @@
     }
 
 </table>
-@Html.PagedListPager(Model,page => Url.Action("Index",new {page}));
+@Html.PagedListPager(Model, page => Url.Action("Index", new { page }));
 
