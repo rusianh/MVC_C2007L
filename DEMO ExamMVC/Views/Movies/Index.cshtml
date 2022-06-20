@@ -10,6 +10,11 @@
 }
 
 <h2>Index</h2>
+@using (Html.BeginForm()) {
+    @Html.TextBox("searchName","",new {@class = "form-control"})
+    <input type="submit" value="Search"/>
+}
+
 
 <p>
     @Html.ActionLink("Create New", "Create")

@@ -11,6 +11,7 @@ using Practice8._1.Models;
 namespace Practice8._1.Controllers
 {
     [Authorize(Users = "admin@mvc.web")]
+    
     public class EmployeesController : Controller
     {
         private DatabaseContext db = new DatabaseContext();

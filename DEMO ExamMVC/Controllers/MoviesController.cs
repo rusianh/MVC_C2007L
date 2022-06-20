@@ -19,15 +19,19 @@ namespace DEMO_ExamMVC.Controllers
 
         // GET: Movies
         [AllowAnonymous]
+        [HttpGet]
         public ActionResult Index(string sortOrder, int page =1, int pageSize =3)
         {
             //ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "name_asc";
+            //string sortOrder = null;
+
             ViewBag.NameSortParm = sortOrder == "name_asc" ? "name_desc" : "name_asc";
 
             ViewBag.TitleSortParm = sortOrder == "Title" ? "title_desc" : "Title";
 
             //ViewBag.DateSortParm = sortOrder == "Date" ? "date_desc" : "Date";
             //List Movies
+
             var movies = db.Movies.Include(m => m.Genre);
             //Switch sortOrder
             switch (sortOrder) {
@@ -53,6 +57,63 @@ namespace DEMO_ExamMVC.Controllers
             //switch order end
                     return View(movies.ToList().ToPagedList(page,pageSize));
         }
+
+        [AllowAnonymous]
+        [HttpPost]
+        public ActionResult Index(string searchName, string notUse, int page = 1, int pageSize = 3)
+        {
+            var List = db.Movies.ToList();
+            if (!string.IsNullOrEmpty(searchName)) {
+                List = List.Where(s => s.Title.ToLower().Contains(searchName.ToLower())).ToList();
+            }
+
+            return View(List.ToList().ToPagedList(page, pageSize));
+        }
+
+        //TH2
+        //public ActionResult Index(string searchName, string sortOrder, int page = 1, int pageSize = 3)
+        //{
+        //    //ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "name_asc";
+        //    //string sortOrder = null;
+
+        //    ViewBag.NameSortParm = sortOrder == "name_asc" ? "name_desc" : "name_asc";
+
+        //    ViewBag.TitleSortParm = sortOrder == "Title" ? "title_desc" : "Title";
+
+        //    //ViewBag.DateSortParm = sortOrder == "Date" ? "date_desc" : "Date";
+        //    //List Movies
+
+        //    var movies = db.Movies.Include(m => m.Genre);
+        //    //Switch sortOrder
+        //    switch (sortOrder) {
+        //        case "title_desc":
+        //            movies = movies.OrderByDescending(s => s.Title);
+        //    break;
+        //        case "Title":
+        //            movies = movies.OrderBy(s => s.Title);
+        //    break;
+        //        case "name_desc":
+        //            movies = movies.OrderByDescending(s => s.Genre.GenreName);
+        //    break;
+        //        //case "name_asc":
+        //        //    movies = movies.OrderBy(s => s.Genre.GenreName);
+        //        //    break;
+        //        //case "date_desc":
+        //        //    movies = movies.OrderByDescending(s => s.EnrollmentDate);
+        //        //    break;
+        //        default:
+        //            movies = movies.OrderBy(s => s.Genre.GenreName);
+        //            break;
+        //    }
+        //    //switch order end
+        //    //var List = db.Movies.ToList();
+        //    if (!string.IsNullOrEmpty(searchName)) {
+        //        movies = movies.Where(s => s.Title.ToLower().Contains(searchName.ToLower()));
+        //    }
+
+        //    return View(movies.ToList().ToPagedList(page, pageSize));
+        //}
+        //END TH2
 
         // GET: Movies/Details/5
         public ActionResult Details(int? id)
