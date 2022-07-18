@@ -1,0 +1,89 @@
+﻿@model PagedList.IPagedList<EAP_C2007L_NguyenDucHuy.Models.Album>
+@using PagedList.Mvc;
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+@using (Html.BeginForm("Index", "Albums", FormMethod.Get))
+{
+    <p>
+        Search: @Html.TextBox("SearchString", ViewBag.CurrentFilter as string, htmlAttributes: new { @class = "form-control" })
+        <input type="submit" value="Search" class="btn btn-" />
+    </p>
+}
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.ActionLink("Genre", "Index", new { sortOrder = ViewBag.GenreParm })
+        </th>
+        <th>
+            @Html.ActionLink("Title", "Index", new { sortOrder = ViewBag.TitleSortParm })
+        </th>
+        <th>
+            @Html.ActionLink("ReleaseDate", "Index", new { sortOrder = ViewBag.ReleaseDateParm })
+        </th>
+        <th>
+            @Html.ActionLink("Artist", "Index", new { sortOrder = ViewBag.ArtistParm })
+        </th>
+        <th>
+            @Html.ActionLink("Price", "Index", new { sortOrder = ViewBag.PriceParm })
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Genres.GenreName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ReleaseDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Artist)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Price)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.AlbumId }) |
+                @Html.ActionLink("Details", "Details", new { id = item.AlbumId }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.AlbumId })
+            </td>
+        </tr>
+    }
+
+</table>
+<br />
+@using (Html.BeginForm("Index", "Albums", FormMethod.Get, new { id = "pschange" }))
+{
+    <div>
+        Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount <br />
+        Showing @Model.Count    @String.Format(" of {0} ", ViewBag.Count)
+        @Html.PagedListPager(Model, page => Url.Action("Index", new { page, pageSize = ViewBag.Pgsize, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }))
+    <div style="width:70px;">
+        @Html.DropDownList("pageSize", (IEnumerable<SelectListItem>)ViewBag.PageSize, htmlAttributes: new { @class = "form-control" })
+    </div>
+        
+    
+        
+    </div>
+}
+<script type="text/javascript">
+    $(function () {
+      
+        $("#pageSize").change(function () {
+            $("#pschange").submit();
+        });
+    });
+</script>
